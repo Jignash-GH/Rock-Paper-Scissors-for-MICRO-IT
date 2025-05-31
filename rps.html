@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://cdn.sanity.io/images/tdrhge4k/production/a40a996d7c54c7689f356cd97cf6c6ba767fe2dd-1200x630.png?q=80&auto=format');
+            background-size: 1000px;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden; 
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            opacity: 0.85;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .choices {
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #resetButton {
+            background-color: #f44336;
+        }
+
+        #resetButton:hover {
+            background-color: #d32f2f;
+        }
+
+        #result {
+            font-size: 24px;
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .win {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+
+        .lose {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+
+        .draw {
+            background-color: #d9edf7;
+            color: #31708f;
+        }
+
+        .score-board {
+            margin: 20px 0;
+            font-size: 20px;
+        }
+
+        .hands-container {
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .hand {
+            font-size: 50px;
+            transform-origin: bottom center;
+            opacity: 1;
+        }
+
+        #playerHand {
+            margin-right: 50px;
+        }
+
+        #computerHand {
+            margin-left: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://images.squarespace-cdn.com/content/v1/5c5821a270468010638b474a/1549967613284-LUFPWN9AVL3KBQXG4X8Z/rock+paper+scissors+FINALS_Full+logo+-+landscape.png"class="logo" alt="Rock Paper Scissors Logo" style="width: 300px; height: auto; margin-bottom: 20px;">
+        <h1>Rock Paper Scissors</h1>
+
+        <div class="score-board">
+            <p>Wins: <span id="wins">0</span></p>
+            <p>Losses: <span id="losses">0</span></p>
+            <p>Draws: <span id="draws">0</span></p>
+        </div>
+
+        <div class="choices">
+            <button onclick="playGame('rock')">Rock</button>
+            <button onclick="playGame('paper')">Paper</button>
+            <button onclick="playGame('scissors')">Scissors</button>
+        </div>
+
+        <div class="hands-container">
+            <div id="playerHand" class="hand"></div>
+            <div id="computerHand" class="hand"></div>
+        </div>
+
+        <div id="result"></div>
+
+        <button id="resetButton" onclick="resetGame()">Reset</button>
+    </div>
+
+    <script>
+        let wins = 0;
+        let losses = 0;
+        let draws = 0;
+
+        const choicesEmoji = {
+            rock: '✊',
+            paper: '✋',
+            scissors: '✌️'
+        };
+
+        function getComputerChoice() {
+            const choices = ['rock', 'paper', 'scissors'];
+            const randomIndex = Math.floor(Math.random() * 3);
+            return choices[randomIndex];
+        }
+
+        function determineWinner(playerChoice, computerChoice) {
+            if (playerChoice === computerChoice) return 'draw';
+
+            const rules = {
+                rock: 'scissors',
+                paper: 'rock',
+                scissors: 'paper'
+            };
+
+            if (rules[playerChoice] === computerChoice) {
+                return 'win';
+            } else {
+                return 'lose';
+            }
+        }
+
+        function updateDisplay(playerChoice, computerChoice, result) {
+            const playerHand = document.getElementById('playerHand');
+            const computerHand = document.getElementById('computerHand');
+
+            playerHand.textContent = choicesEmoji[playerChoice];
+            computerHand.textContent = choicesEmoji[computerChoice];
+
+            const resultElement = document.getElementById('result');
+            resultElement.className = result;
+
+            switch (result) {
+                case 'win':
+                    resultElement.textContent = 'You Win!';
+                    wins++;
+                    break;
+                case 'lose':
+                    resultElement.textContent = 'You Lose!';
+                    losses++;
+                    break;
+                case 'draw':
+                    resultElement.textContent = 'Draw!';
+                    draws++;
+                    break;
+            }
+
+            document.getElementById('wins').textContent = wins;
+            document.getElementById('losses').textContent = losses;
+            document.getElementById('draws').textContent = draws;
+        }
+
+        function playGame(playerChoice) {
+            const computerChoice = getComputerChoice();
+            const result = determineWinner(playerChoice, computerChoice);
+            updateDisplay(playerChoice, computerChoice, result);
+        }
+
+        function resetGame() {
+            wins = 0;
+            losses = 0;
+            draws = 0;
+
+            document.getElementById('wins').textContent = wins;
+            document.getElementById('losses').textContent = losses;
+            document.getElementById('draws').textContent = draws;
+
+            document.getElementById('playerHand').textContent = '';
+            document.getElementById('computerHand').textContent = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('result').className = '';
+        }
+    </script>
+</body>
+</html>
